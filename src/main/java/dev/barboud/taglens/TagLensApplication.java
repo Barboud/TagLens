@@ -1,4 +1,4 @@
-package dev.barboud.TagLens;
+package dev.barboud.taglens;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

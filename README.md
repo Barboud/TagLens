@@ -11,7 +11,6 @@ Creates a new user account.
 
 ```json
 {
-  "id": "f5a2dad6-aff3-4a3e-9365-6e70936af223",
   "email": "user@example.com",
   "password": "yourpassword"
 }
@@ -21,6 +20,7 @@ Creates a new user account.
 
 ```json
 {
+  "id": "f5a2dad6-aff3-4a3e-9365-6e70936af223",
   "email": "user@example.com",
   "created_at": "2026-07-24T18:00:00Z"
 }
