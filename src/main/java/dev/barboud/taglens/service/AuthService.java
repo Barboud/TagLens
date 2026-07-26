@@ -26,7 +26,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final long SESSION_DURATION_MINUTES = 60 * 24 * 7;
+    private static final long SESSION_DURATION_MINUTES = 16;
 
 
     public void registerUser(UserRegistrationDto registrationDto) {
