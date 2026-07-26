@@ -23,7 +23,7 @@ public class UserRepository {
     }
 
 
-    public Optional<User> findByEmail(String email) {
+    public Optional<User> findUserByEmail(String email) {
         String sql = "SELECT id, email, password_hash FROM users WHERE email = ?";
         List<User> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
             User u = new User();
@@ -32,6 +32,22 @@ public class UserRepository {
             u.setPasswordHash(rs.getString("password_hash"));
             return u;
         }, email);
+
+        return results.stream().findFirst();
+    }
+
+
+
+    public Optional<User> findUserById(UUID id) {
+        String sql = "SELECT id, email, password_hash, created_at FROM users WHERE id = ?";
+        List<User> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            User user = new User();
+            user.setId(UUID.fromString(rs.getString("id")));
+            user.setEmail(rs.getString("email"));
+            user.setPasswordHash(rs.getString("password_hash"));
+            user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            return user;
+        }, id);
 
         return results.stream().findFirst();
     }

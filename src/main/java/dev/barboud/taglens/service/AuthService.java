@@ -2,6 +2,7 @@ package dev.barboud.taglens.service;
 
 import dev.barboud.taglens.dto.LoginDto;
 import dev.barboud.taglens.dto.UserRegistrationDto;
+import dev.barboud.taglens.dto.UserResponseDto;
 import dev.barboud.taglens.model.Session;
 import dev.barboud.taglens.model.User;
 import dev.barboud.taglens.repository.SessionRepository;
@@ -41,7 +42,7 @@ public class AuthService {
 
 
     public UUID login(LoginDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.getEmail())
+        User user = userRepository.findUserByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPasswordHash())) {
@@ -63,6 +64,12 @@ public class AuthService {
         sessionRepository.deleteSession(sessionId);
     }
 
+    public UserResponseDto getCurrentUser(UUID userId) {
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+
+        return new UserResponseDto(user.getId(), user.getEmail(), user.getCreatedAt());
+    }
 
 
 }

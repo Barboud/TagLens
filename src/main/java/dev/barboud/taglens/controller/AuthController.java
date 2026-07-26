@@ -3,6 +3,7 @@ package dev.barboud.taglens.controller;
 
 import dev.barboud.taglens.dto.LoginDto;
 import dev.barboud.taglens.dto.UserRegistrationDto;
+import dev.barboud.taglens.dto.UserResponseDto;
 import dev.barboud.taglens.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -71,6 +73,12 @@ public class AuthController {
                 .build();
     }
 
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto> getCurrentUser(Authentication authentication) {
+        UUID userId = (UUID) authentication.getPrincipal();
+        return ResponseEntity.ok(authService.getCurrentUser(userId));
+    }
 
 
 }
