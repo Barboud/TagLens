@@ -1,8 +1,8 @@
 package dev.barboud.taglens.service;
 
-import dev.barboud.taglens.dto.LoginDto;
-import dev.barboud.taglens.dto.UserRegistrationDto;
-import dev.barboud.taglens.dto.UserResponseDto;
+import dev.barboud.taglens.dto.user.UserLoginDto;
+import dev.barboud.taglens.dto.user.UserRegistrationDto;
+import dev.barboud.taglens.dto.user.UserResponseDto;
 import dev.barboud.taglens.model.Session;
 import dev.barboud.taglens.model.User;
 import dev.barboud.taglens.repository.SessionRepository;
@@ -41,7 +41,7 @@ public class AuthService {
     }
 
 
-    public UUID login(LoginDto loginDto) {
+    public UUID login(UserLoginDto loginDto) {
         User user = userRepository.findUserByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 

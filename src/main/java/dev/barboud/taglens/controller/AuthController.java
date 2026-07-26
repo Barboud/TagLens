@@ -1,9 +1,9 @@
 package dev.barboud.taglens.controller;
 
 
-import dev.barboud.taglens.dto.LoginDto;
-import dev.barboud.taglens.dto.UserRegistrationDto;
-import dev.barboud.taglens.dto.UserResponseDto;
+import dev.barboud.taglens.dto.user.UserLoginDto;
+import dev.barboud.taglens.dto.user.UserRegistrationDto;
+import dev.barboud.taglens.dto.user.UserResponseDto;
 import dev.barboud.taglens.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -34,7 +34,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<Void> login(@Valid @RequestBody UserLoginDto loginDto) {
         UUID sessionId = authService.login(loginDto);
 
         ResponseCookie cookie = ResponseCookie.from("session_id", sessionId.toString())
