@@ -1,14 +1,9 @@
-# Authentication Endpoints
+# Auth Endpoints
 
-## 1. Register User
+## Register
+`POST /auth/register`
 
-Creates a new user account.
-
-- **URL:** `/auth/register`
-- **Method:** `POST`
-
-**Request Body:**
-
+**Body:**
 ```json
 {
   "email": "user@example.com",
@@ -16,27 +11,12 @@ Creates a new user account.
 }
 ```
 
-**Success Response:** `201 Created`
+**→ 201:** returns user (`id`, `email`, `created_at`)
 
-```json
-{
-  "id": "f5a2dad6-aff3-4a3e-9365-6e70936af223",
-  "email": "user@example.com",
-  "created_at": "2026-07-24T18:00:00Z"
-}
-```
+## Login
+`POST /auth/login`
 
----
-
-## 2. Login User
-
-Authenticates user credentials and creates an active session.
-
-- **URL:** `/auth/login`
-- **Method:** `POST`
-
-**Request Body:**
-
+**Body:**
 ```json
 {
   "email": "user@example.com",
@@ -44,38 +24,18 @@ Authenticates user credentials and creates an active session.
 }
 ```
 
-**Success Response:** `200 OK`
+**→ 200:** creates session, returns `session_id` as cookie
 
-The server creates a new session and returns the session ID as an HTTP-only cookie.
+## Logout
+`POST /auth/logout`
 
----
+**Header:** `Cookie: session_id=<SESSION_ID>`
 
-## 3. Logout User
+**→ 200 OK**
 
-Terminates the current user session.
+## Get Current User
+`GET /auth/me`
 
-- **URL:** `/auth/logout`
-- **Method:** `POST`
-- **Headers:** `Cookie: session_id=<SESSION_ID>`
+**Header:** `Cookie: session_id=<SESSION_ID>`
 
-**Success Response:** `200 OK`
-
----
-
-## 4. Get Current User Profile
-
-Retrieves details of the currently authenticated user.
-
-- **URL:** `/auth/me`
-- **Method:** `GET`
-- **Headers:** `Cookie: session_id=<SESSION_ID>`
-
-**Success Response:** `200 OK`
-
-```json
-{
-  "id": "f5a2dad6-aff3-4a3e-9365-6e70936af223",
-  "email": "user@example.com",
-  "created_at": "2026-07-24T18:00:00Z"
-}
-```
+**→ 200:** returns user (`id`, `email`, `created_at`)
