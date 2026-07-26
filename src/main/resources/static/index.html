@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TagLens</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+    <div class="title">Tag<span>_</span>Lens</div>
+
+    <!-- Loading state -->
+    <div id="loadingView" class="panel center-text">
+        <div class="panel-label">Checking session…</div>
+    </div>
+
+    <!-- Logged OUT view -->
+    <div id="guestView" class="hidden">
+        <h1>Tag Lens</h1>
+
+        <div class="status">
+            <div class="dot" id="statusDot"></div>
+            <div class="status-text">Not logged in</div>
+        </div>
+
+        <!-- Register -->
+        <div class="panel">
+            <div class="panel-label">Register</div>
+            <label>Email</label>
+            <input type="email" id="regEmail" placeholder="user@example.com">
+            <label>Password</label>
+            <input type="password" id="regPassword" placeholder="••••••••">
+            <button class="btn-secondary" style="width:100%" onclick="register()">Create account</button>
+        </div>
+
+        <!-- Login -->
+        <div class="panel">
+            <div class="panel-label">Login</div>
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="user@example.com">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••">
+            <button class="btn-primary" style="width:100%" onclick="login()">Log in</button>
+        </div>
+    </div>
+
+    <!-- Logged IN view -->
+    <div id="userView" class="hidden">
+        <h1>Welcome back</h1>
+
+        <div class="status">
+            <div class="dot on"></div>
+            <div class="status-text">Logged in</div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-label">Your account</div>
+            <div class="field">
+                <span class="field-label">Email</span>
+                <span class="field-value" id="userEmail">—</span>
+            </div>
+            <div class="field">
+                <span class="field-label">User ID</span>
+                <span class="field-value mono-small" id="userId">—</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Member since</span>
+                <span class="field-value" id="userCreatedAt">—</span>
+            </div>
+        </div>
+
+        <button class="btn-danger" onclick="logout()">Log out</button>
+    </div>
+
+    <!-- Log -->
+    <div class="log">
+        <div class="log-label">Log</div>
+        <div id="logBody"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
