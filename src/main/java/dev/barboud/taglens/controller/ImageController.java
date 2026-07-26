@@ -1,13 +1,16 @@
 package dev.barboud.taglens.controller;
 
 
+import dev.barboud.taglens.dto.image.ImageResponseDto;
+import dev.barboud.taglens.model.Image;
 import dev.barboud.taglens.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/images")
@@ -18,10 +21,16 @@ public class ImageController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> uploadImage(
-            @RequestParam("file") MultipartFile file) throws Exception {
-        String storageKey = imageService.uploadImage(file);
-        return ResponseEntity.ok(Map.of("storage_key", storageKey));
+    public ResponseEntity<ImageResponseDto> uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @CookieValue("session_id") UUID sessionId
+    ) throws Exception {
+
+        ImageResponseDto imageResponseDto = imageService.uploadImage(file, sessionId);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(imageResponseDto);
     }
 
 //    @GetMapping("/link")

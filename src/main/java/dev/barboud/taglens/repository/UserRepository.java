@@ -12,8 +12,8 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class UserRepository {
-    private final JdbcTemplate jdbcTemplate;
 
+    private final JdbcTemplate jdbcTemplate;
 
     public void registerUser(User user) {
         jdbcTemplate.update(
@@ -21,7 +21,6 @@ public class UserRepository {
                 user.getId(), user.getEmail(), user.getPasswordHash()
         );
     }
-
 
     public Optional<User> findUserByEmail(String email) {
         String sql = "SELECT id, email, password_hash FROM users WHERE email = ?";
@@ -35,8 +34,6 @@ public class UserRepository {
 
         return results.stream().findFirst();
     }
-
-
 
     public Optional<User> findUserById(UUID id) {
         String sql = "SELECT id, email, password_hash, created_at FROM users WHERE id = ?";

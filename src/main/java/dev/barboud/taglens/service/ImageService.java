@@ -1,66 +1,76 @@
 package dev.barboud.taglens.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import dev.barboud.taglens.dto.image.ImageResponseDto;
+import dev.barboud.taglens.model.Image;
+import dev.barboud.taglens.model.Session;
+import dev.barboud.taglens.repository.ImageRepository;
+import dev.barboud.taglens.repository.SessionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
-import java.time.Duration;
+
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
-    private final S3Client s3Client;
-    private final S3Presigner s3Presigner;
+    private final SessionRepository sessionRepository;
+    private final ImageRepository imageRepository;
+    private final StorageService fileService;
 
-    @Value("${b2.bucket}")
-    private String bucket;
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-    public ImageService(S3Client s3Client, S3Presigner s3Presigner) {
-        this.s3Client = s3Client;
-        this.s3Presigner = s3Presigner;
-    }
+    public ImageResponseDto uploadImage(
+            MultipartFile file,
+            UUID sessionId
+    ) throws Exception {
 
-    // Upload — returns the key to save in your database
-    public String uploadImage(MultipartFile file) throws Exception {
-        String originalFilename = file.getOriginalFilename();
-        String extension = "";
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        // 1. Check if session is valid
+        Session session = sessionRepository
+                .findValidSession(sessionId)
+                .orElseThrow(() ->
+                        new RuntimeException("Unauthorized"));
+
+        // 2. Get user ID
+        UUID userId = session.getUserId();
+
+        // 3. Check file size
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException(
+                    "File size must not exceed 10 MB"
+            );
         }
 
-        String storageKey = "images/" + UUID.randomUUID() + extension;
-        s3Client.putObject(
-                PutObjectRequest.builder()
-                        .bucket(bucket).key(storageKey)
-                        .contentType(file.getContentType()).build(),
-                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
+        // 4. Check file type
+        String contentType = file.getContentType();
+
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new RuntimeException("Only image files are allowed");
+        }
+
+        // 5. Upload image to Object Storage
+        String storageKey =
+                fileService.upload(file);
+
+        // 6. Create Image object
+        Image image = new Image();
+
+        image.setId(UUID.randomUUID());
+        image.setUserId(userId);
+        image.setStorageKey(storageKey);
+        image.setContentType(file.getContentType());
+        image.setFileSize(file.getSize());
+
+        // 7. Save image metadata in Database
+        imageRepository.saveImage(image);
+
+        return new ImageResponseDto(
+                image.getId(),
+                image.getContentType(),
+                image.getFileSize(),
+                image.getStorageKey()
         );
-        return storageKey;
     }
-
-//    // Presigned URL — expires after given minutes
-//    public String getImageLink(String key, int minutes) {
-//        return s3Presigner.presignGetObject(
-//                GetObjectPresignRequest.builder()
-//                        .signatureDuration(Duration.ofMinutes(minutes))
-//                        .getObjectRequest(r -> r.bucket(bucket).key(key))
-//                        .build()
-//        ).url().toString();
-//    }
-//
-//    // Delete
-//    public void deleteImage(String key) {
-//        s3Client.deleteObject(
-//                DeleteObjectRequest.builder()
-//                        .bucket(bucket).key(key).build()
-//        );
-//    }
-
 }
