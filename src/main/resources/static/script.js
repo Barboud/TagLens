@@ -105,3 +105,47 @@ async function logout() {
 
 // Kick things off as soon as the page loads
 checkSession();
+
+async function uploadImage() {
+    const fileInput = document.getElementById('imageFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        log('Pick a file first', true);
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        log('File too large — max 10MB', true);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const res = await fetch('/images/upload', {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+            // no Content-Type header — the browser sets the multipart boundary itself
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            log(`Image uploaded (id: ${data.id || 'ok'})`);
+
+            // Show a quick local preview of what was just uploaded
+            const preview = document.getElementById('uploadPreview');
+            preview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            preview.appendChild(img);
+        } else {
+            const text = await res.text();
+            log(`Upload failed [${res.status}]: ${text}`, true);
+        }
+    } catch (e) {
+        log(`Connection error: ${e.message}`, true);
+    }
+}

@@ -13,6 +13,7 @@ import java.util.UUID;
 @Repository
 @RequiredArgsConstructor
 public class SessionRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     public void createSession(Session session) {
@@ -21,7 +22,6 @@ public class SessionRepository {
                 session.getId(), session.getUserId(), Timestamp.from(session.getExpiresAt())
         );
     }
-
 
     public Optional<Session> findValidSession(UUID sessionId) {
         String sql = "SELECT id, user_id, expires_at FROM sessions WHERE id = ? AND expires_at > NOW()";
@@ -35,7 +35,6 @@ public class SessionRepository {
 
         return results.stream().findFirst();
     }
-
 
     public void deleteSession(UUID sessionId) {
         jdbcTemplate.update("DELETE FROM sessions WHERE id = ?", sessionId);

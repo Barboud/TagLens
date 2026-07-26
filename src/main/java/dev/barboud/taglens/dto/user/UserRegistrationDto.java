@@ -1,4 +1,4 @@
-package dev.barboud.taglens.dto;
+package dev.barboud.taglens.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -211,3 +211,19 @@ button:active { opacity: 0.7; }
     font-weight: 400;
     color: var(--muted);
 }
+
+input[type="file"] {
+    padding: 8px;
+    font-size: 12px;
+}
+
+#uploadPreview {
+    margin-top: 14px;
+}
+
+#uploadPreview img {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: block;
+}

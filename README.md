@@ -39,3 +39,15 @@
 **Header:** `Cookie: session_id=<SESSION_ID>`
 
 **→ 200:** returns user (`id`, `email`, `created_at`)
+
+
+
+# Image Endpoints
+
+
+
+- `POST   /images/upload`             Upload image
+- `GET    /images/my`           My uploaded images
+- `GET    /images`              Home / search images      **_Public_**
+- `GET    /images/{id}/content` Display image     **_Public_**
+- `DELETE /images/{id}`         Delete my image

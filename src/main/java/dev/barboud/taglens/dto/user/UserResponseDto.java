@@ -1,4 +1,4 @@
-package dev.barboud.taglens.dto;
+package dev.barboud.taglens.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
