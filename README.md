@@ -46,8 +46,8 @@
 
 
 
-- `POST   /api/images`             Upload image
-- `GET    /api/images/my`           My uploaded images
-- `GET    /api/images`              Home / search images      **_Public_**
-- `GET    /api/images/{id}/content` Display image     **_Public_**
-- `DELETE /api/images/{id}`         Delete my image
+- `POST   /images/upload`             Upload image
+- `GET    /images/my`           My uploaded images
+- `GET    /images`              Home / search images      **_Public_**
+- `GET    /images/{id}/content` Display image     **_Public_**
+- `DELETE /images/{id}`         Delete my image
