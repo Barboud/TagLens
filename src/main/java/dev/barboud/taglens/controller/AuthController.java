@@ -4,16 +4,14 @@ package dev.barboud.taglens.controller;
 import dev.barboud.taglens.dto.LoginDto;
 import dev.barboud.taglens.dto.UserRegistrationDto;
 import dev.barboud.taglens.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -47,6 +45,29 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
+
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@CookieValue(name = "session_id", required = false) UUID sessionId,
+                                       HttpServletResponse response) {
+
+        if (sessionId != null) {
+            authService.logout(sessionId);
+        }
+
+        ResponseCookie deleteCookie = ResponseCookie.from("session_id", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)   // delete from browser also
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                 .build();
     }
 

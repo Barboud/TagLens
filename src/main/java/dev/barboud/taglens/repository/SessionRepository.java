@@ -35,4 +35,10 @@ public class SessionRepository {
 
         return results.stream().findFirst();
     }
+
+
+    public void deleteSession(UUID sessionId) {
+        jdbcTemplate.update("DELETE FROM sessions WHERE id = ?", sessionId);
+    }
+
 }
