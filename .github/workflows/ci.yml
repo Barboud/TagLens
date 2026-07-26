@@ -37,7 +37,9 @@ jobs:
           DB_URL: jdbc:postgresql://localhost:5432/testdb
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
-          RESEND_API: test-key-not-real
+          B2_ACCESS_KEY: test-key-not-real
+          B2_SECRET_KEY: test-secret-not-real
+          B2_BUCKET_NAME: test-bucket
 
   build-and-push:
     runs-on: ubuntu-latest
