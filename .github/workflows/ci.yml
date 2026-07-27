@@ -40,6 +40,9 @@ jobs:
           B2_ACCESS_KEY: test-key-not-real
           B2_SECRET_KEY: test-secret-not-real
           B2_BUCKET_NAME: test-bucket
+          LOKI_URL: http://localhost:3100
+          LOKI_USERNAME: dummy
+          LOKI_API_TOKEN: dummy
 
   build-and-push:
     runs-on: ubuntu-latest
