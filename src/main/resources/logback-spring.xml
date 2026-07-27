@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Keep Spring Boot's normal console logging for humans -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- Send a copy of every log record to Grafana Cloud (Loki) -->
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>${LOKI_URL}/loki/api/v1/push</url>
+            <auth>
+                <username>${LOKI_USERNAME}</username>
+                <password>${LOKI_API_TOKEN}</password>
+            </auth>
+            <requestTimeoutMs>15000</requestTimeoutMs>
+        </http>
+        <batch>
+            <maxBytes>65536</maxBytes>
+        </batch>
+        <labels>
+            app = TagLens
+            env = ${SPRING_PROFILES_ACTIVE}
+            level = %level
+        </labels>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOKI"/>
+    </root>
+</configuration>
