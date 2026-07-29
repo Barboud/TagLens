@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -33,10 +34,16 @@ public class ImageController {
                 .body(imageResponseDto);
     }
 
-//    @GetMapping("/link")
-//    public ResponseEntity<Map<String, String>> getImageLink(@RequestParam String key) {
-//        return ResponseEntity.ok(Map.of("url", imageService.getImageLink(key, 15)));
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, String>> getImageLink(
+            @PathVariable UUID id,
+            @CookieValue("session_id") UUID sessionId
+    ) {
+        String url = imageService.getImageLink(id, sessionId);
+        return ResponseEntity.ok(Map.of("url", url));
+    }
+
+
 //
 //    @DeleteMapping
 //    public ResponseEntity<Void> deleteImage(@RequestParam String key) {

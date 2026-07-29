@@ -18,7 +18,7 @@ public class ImageService {
 
     private final SessionRepository sessionRepository;
     private final ImageRepository imageRepository;
-    private final StorageService fileService;
+    private final StorageService storageService;
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -52,7 +52,7 @@ public class ImageService {
 
         // 5. Upload image to Object Storage
         String storageKey =
-                fileService.upload(file);
+                storageService.upload(file);
 
         // 6. Create Image object
         Image image = new Image();
@@ -72,5 +72,20 @@ public class ImageService {
                 image.getFileSize(),
                 image.getStorageKey()
         );
+    }
+
+
+    public String getImageLink(UUID imageId, UUID sessionId) {
+        Session session = sessionRepository.findValidSession(sessionId)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+
+        Image image = imageRepository.findImageById(imageId)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+
+        if (!image.getUserId().equals(session.getUserId())) {
+            throw new RuntimeException("Not found");
+        }
+
+        return storageService.getLink(image.getStorageKey(), 15);
     }
 }
