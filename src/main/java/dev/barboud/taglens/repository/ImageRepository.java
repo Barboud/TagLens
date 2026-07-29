@@ -52,4 +52,12 @@ public class ImageRepository {
         return results.stream().findFirst();
     }
 
+    public void deleteImage(UUID imageId) {
+        String sql = """
+        DELETE FROM images
+        WHERE id = ?
+        """;
+        jdbcTemplate.update(sql, imageId);
+    }
+
 }

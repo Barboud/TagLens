@@ -48,6 +48,6 @@
 
 - `POST   /images/upload`             Upload image
 - `GET    /images/{id}`               Get image link
+- `DELETE /images/{id}`         Delete my image
 - `GET    /images/my`           My uploaded images
 - `GET    /images`              Home / search images      **_Public_**
-- `DELETE /images/{id}`         Delete my image
