@@ -47,7 +47,7 @@
 
 
 - `POST   /images/upload`             Upload image
+- `GET    /images/{id}`               Get image link
 - `GET    /images/my`           My uploaded images
 - `GET    /images`              Home / search images      **_Public_**
-- `GET    /images/{id}/content` Display image     **_Public_**
 - `DELETE /images/{id}`         Delete my image
