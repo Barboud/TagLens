@@ -44,11 +44,12 @@ public class ImageController {
     }
 
 
-//
-//    @DeleteMapping
-//    public ResponseEntity<Void> deleteImage(@RequestParam String key) {
-//        imageService.deleteImage(key);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteImage(
+            @PathVariable UUID id,
+            @CookieValue("session_id") UUID sessionId) {
+        imageService.deleteImage(id, sessionId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

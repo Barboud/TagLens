@@ -88,4 +88,17 @@ public class ImageService {
 
         return storageService.getLink(image.getStorageKey(), 15);
     }
+
+    public void deleteImage(UUID imageId, UUID sessionId) {
+        Session session = sessionRepository.findValidSession(sessionId)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+        Image image = imageRepository.findImageById(imageId)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+        if (!image.getUserId().equals(session.getUserId())) {
+            throw new RuntimeException("Not found");
+        }
+
+        storageService.delete(image.getStorageKey());
+        imageRepository.deleteImage(imageId);
+    }
 }
