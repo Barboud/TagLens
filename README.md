@@ -51,3 +51,8 @@
 - `DELETE /images/{id}`         Delete my image
 - `GET    /images/my`           My uploaded images
 - `GET    /images`              Home / search images      **_Public_**
+
+
+
+# Spring Boot Actuator
+- `GET    /actuator/health`               
