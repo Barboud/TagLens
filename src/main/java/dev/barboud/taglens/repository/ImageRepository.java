@@ -5,6 +5,7 @@ import dev.barboud.taglens.model.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +80,14 @@ public class ImageRepository {
                 }, userId);
 
         return results;
+    }
+
+    public void updateTags(UUID imageId, JsonNode tags) {
+        String json = tags.toString();
+        jdbcTemplate.update(
+                "UPDATE images SET tags = ?::jsonb WHERE id = ?",
+                json, imageId
+        );
     }
 
 }
