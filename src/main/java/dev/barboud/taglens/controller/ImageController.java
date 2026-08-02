@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,6 +51,14 @@ public class ImageController {
             @CookieValue("session_id") UUID sessionId) {
         imageService.deleteImage(id, sessionId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<ImageResponseDto>> getMyImages(
+            @CookieValue("session_id") UUID sessionId
+    ) {
+        List<ImageResponseDto> imageResponseDto = imageService.getMyImages(sessionId);
+        return ResponseEntity.ok(imageResponseDto);
     }
 
 }

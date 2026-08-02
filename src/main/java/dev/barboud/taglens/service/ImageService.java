@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -100,5 +101,22 @@ public class ImageService {
 
         storageService.delete(image.getStorageKey());
         imageRepository.deleteImage(imageId);
+    }
+
+    public List<ImageResponseDto> getMyImages(UUID sessionId){
+        Session session = sessionRepository.findValidSession(sessionId)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+
+        List<Image> images = imageRepository.findImagesByUserId(session.getUserId());
+
+        return images.stream()
+                .map(image -> new ImageResponseDto(
+                        image.getId(),
+                        image.getContentType(),
+                        image.getFileSize(),
+                        image.getStorageKey()
+                ))
+                .toList();
+
     }
 }
