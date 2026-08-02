@@ -23,16 +23,14 @@ public class ImageController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<ImageResponseDto> uploadImage(
+    public ResponseEntity<Void> uploadImage(
             @RequestParam("file") MultipartFile file,
             @CookieValue("session_id") UUID sessionId
     ) throws Exception {
 
-        ImageResponseDto imageResponseDto = imageService.uploadImage(file, sessionId);
+        imageService.uploadImage(file, sessionId);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(imageResponseDto);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
