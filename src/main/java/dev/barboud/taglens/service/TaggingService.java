@@ -1,11 +1,13 @@
 package dev.barboud.taglens.service;
 
+import dev.barboud.taglens.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -20,6 +22,7 @@ public class TaggingService {
 
     private final RestClient geminiClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ImageRepository imageRepository;
 
     @Value("${gemini.api.key}")
     private String apiKey;
@@ -68,7 +71,7 @@ public class TaggingService {
                 .body(String.class);
     }
 
-    public JsonNode generateTags(byte[] imageBytes, String contentType) {
+    public Map<String, Object> generateTags(byte[] imageBytes, String contentType) {
         String rawResponse = generateTagsRaw(imageBytes, contentType);
 
         JsonNode root = objectMapper.readTree(rawResponse);
@@ -78,13 +81,14 @@ public class TaggingService {
 
         text = text.replaceAll("```json|```", "").trim();
 
-        return objectMapper.readTree(text);
+        return objectMapper.readValue(text, new TypeReference<Map<String, Object>>() {});
     }
 
     @Async
     public void tagImageAsync(UUID imageId, byte[] imageBytes, String contentType) {
-        JsonNode tags = generateTags(imageBytes, contentType);
-        log.info("Tags generated for image={}, tags={}", imageId, tags);
+        Map<String, Object> tags = generateTags(imageBytes, contentType);
+        imageRepository.updateImageTags(imageId, tags);
+        log.info("Tags saved for image={}, tags={}", imageId, tags);
     }
 
 }

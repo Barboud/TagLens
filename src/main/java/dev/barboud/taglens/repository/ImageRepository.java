@@ -1,13 +1,13 @@
 package dev.barboud.taglens.repository;
 
-import dev.barboud.taglens.dto.image.ImageResponseDto;
 import dev.barboud.taglens.model.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +16,7 @@ import java.util.UUID;
 public class ImageRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ObjectMapper objectMapper;
 
     public void saveImage(Image image) {
 
@@ -82,8 +83,8 @@ public class ImageRepository {
         return results;
     }
 
-    public void updateTags(UUID imageId, JsonNode tags) {
-        String json = tags.toString();
+    public void updateImageTags(UUID imageId, Map<String, Object> tags) {
+        String json = objectMapper.writeValueAsString(tags);
         jdbcTemplate.update(
                 "UPDATE images SET tags = ?::jsonb WHERE id = ?",
                 json, imageId
