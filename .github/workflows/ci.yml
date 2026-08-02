@@ -43,7 +43,7 @@ jobs:
           LOKI_URL: http://localhost:3100
           LOKI_USERNAME: dummy
           LOKI_API_TOKEN: dummy
-          GITHUB_MODELS_TOKEN: dummy
+          GEMINI_API_KEY: dummy
 
   build-and-push:
     runs-on: ubuntu-latest
