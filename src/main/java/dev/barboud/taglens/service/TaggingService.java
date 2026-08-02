@@ -1,17 +1,19 @@
 package dev.barboud.taglens.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import software.amazon.awssdk.thirdparty.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaggingService {
@@ -77,6 +79,12 @@ public class TaggingService {
         text = text.replaceAll("```json|```", "").trim();
 
         return objectMapper.readTree(text);
+    }
+
+    @Async
+    public void tagImageAsync(UUID imageId, byte[] imageBytes, String contentType) {
+        JsonNode tags = generateTags(imageBytes, contentType);
+        log.info("Tags generated for image={}, tags={}", imageId, tags);
     }
 
 }
