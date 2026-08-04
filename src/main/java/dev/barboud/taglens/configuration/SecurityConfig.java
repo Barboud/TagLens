@@ -23,6 +23,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/auth/register").permitAll()   // login & register: public
                         .requestMatchers("/", "/*.html", "/*.css", "/*.js").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/images").permitAll()
                         .anyRequest().authenticated()           // everything else: must be logged in
                 )
                 .addFilterBefore(sessionAuthFilter, UsernamePasswordAuthenticationFilter.class);
