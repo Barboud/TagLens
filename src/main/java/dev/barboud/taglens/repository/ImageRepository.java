@@ -1,12 +1,14 @@
 package dev.barboud.taglens.repository;
 
-import dev.barboud.taglens.dto.image.ImageResponseDto;
 import dev.barboud.taglens.model.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +17,13 @@ import java.util.UUID;
 public class ImageRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ObjectMapper objectMapper;
+
+
+    private Map<String, Object> parseTags(String tagsJson) {
+        if (tagsJson == null) return null;
+        return objectMapper.readValue(tagsJson, new TypeReference<Map<String, Object>>() {});
+    }
 
     public void saveImage(Image image) {
 
@@ -34,7 +43,7 @@ public class ImageRepository {
 
     public Optional<Image> findImageById(UUID imageId) {
         String sql = """
-        SELECT id, user_id, storage_key, content_type, file_size, created_at
+        SELECT id, user_id, storage_key, content_type, file_size, created_at, tags
         FROM images
         WHERE id = ?
         """;
@@ -47,6 +56,7 @@ public class ImageRepository {
             image.setContentType(rs.getString("content_type"));
             image.setFileSize(rs.getLong("file_size"));
             image.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+            image.setTags(parseTags(rs.getString("tags")));
             return image;
         }, imageId);
 
@@ -63,7 +73,7 @@ public class ImageRepository {
 
     public List<Image> findImagesByUserId(UUID userId) {
         String sql = """
-        SELECT id, user_id, storage_key, content_type, file_size, created_at
+        SELECT id, user_id, storage_key, content_type, file_size, created_at, tags
         FROM images
         WHERE user_id = ?
         """;
@@ -75,10 +85,19 @@ public class ImageRepository {
                     image.setContentType(rs.getString("content_type"));
                     image.setFileSize(rs.getLong("file_size"));
                     image.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                    image.setTags(parseTags(rs.getString("tags")));
                     return image;
                 }, userId);
 
         return results;
+    }
+
+    public void updateImageTags(UUID imageId, Map<String, Object> tags) {
+        String json = objectMapper.writeValueAsString(tags);
+        jdbcTemplate.update(
+                "UPDATE images SET tags = ?::jsonb WHERE id = ?",
+                json, imageId
+        );
     }
 
 }

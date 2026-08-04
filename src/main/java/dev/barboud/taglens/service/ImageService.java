@@ -20,10 +20,11 @@ public class ImageService {
     private final SessionRepository sessionRepository;
     private final ImageRepository imageRepository;
     private final StorageService storageService;
+    private final TaggingService taggingService;
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-    public ImageResponseDto uploadImage(
+    public void uploadImage(
             MultipartFile file,
             UUID sessionId
     ) throws Exception {
@@ -67,12 +68,9 @@ public class ImageService {
         // 7. Save image metadata in Database
         imageRepository.saveImage(image);
 
-        return new ImageResponseDto(
-                image.getId(),
-                image.getContentType(),
-                image.getFileSize(),
-                image.getStorageKey()
-        );
+        // 8. Generate Ai Tags
+        taggingService.tagImageAsync(image.getId(), file.getBytes(), file.getContentType());
+
     }
 
 
@@ -114,7 +112,8 @@ public class ImageService {
                         image.getId(),
                         image.getContentType(),
                         image.getFileSize(),
-                        image.getStorageKey()
+                        image.getStorageKey(),
+                        image.getTags()
                 ))
                 .toList();
 
