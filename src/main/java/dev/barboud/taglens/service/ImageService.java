@@ -118,4 +118,33 @@ public class ImageService {
                 .toList();
 
     }
+
+    public List<ImageResponseDto> getRecentImages() {
+        List<Image> images = imageRepository.findRecentImages();
+
+        return images.stream()
+                .map(image -> new ImageResponseDto(
+                        image.getId(),
+                        image.getContentType(),
+                        image.getFileSize(),
+                        image.getStorageKey(),
+                        image.getTags()
+                ))
+                .toList();
+    }
+
+    public List<ImageResponseDto> searchImages(String search) {
+        List<Image> images = imageRepository.findImageBySearchQuery(search);
+
+        return images.stream()
+                .map(image -> new ImageResponseDto(
+                        image.getId(),
+                        image.getContentType(),
+                        image.getFileSize(),
+                        image.getStorageKey(),
+                        image.getTags()
+                ))
+                .toList();
+    }
+
 }

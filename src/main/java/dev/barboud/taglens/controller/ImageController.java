@@ -59,4 +59,14 @@ public class ImageController {
         return ResponseEntity.ok(imageResponseDto);
     }
 
+    @GetMapping
+    public List<ImageResponseDto> browseImages(
+            @RequestParam(value = "search", required = false) String search
+    ) {
+        if (search != null && !search.isBlank()) {
+            return imageService.searchImages(search);
+        }
+        return imageService.getRecentImages();
+    }
+
 }
