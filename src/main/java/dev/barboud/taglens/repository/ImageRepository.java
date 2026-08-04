@@ -100,4 +100,49 @@ public class ImageRepository {
         );
     }
 
+    public List<Image> findRecentImages() {
+        String sql = """
+        SELECT id, user_id, storage_key, content_type, file_size, created_at, tags
+        FROM images
+        ORDER BY created_at DESC
+        LIMIT 50
+        """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Image image = new Image();
+            image.setId(UUID.fromString(rs.getString("id")));
+            image.setUserId(UUID.fromString(rs.getString("user_id")));
+            image.setStorageKey(rs.getString("storage_key"));
+            image.setContentType(rs.getString("content_type"));
+            image.setFileSize(rs.getLong("file_size"));
+            image.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+            image.setTags(parseTags(rs.getString("tags")));
+            return image;
+        });
+    }
+
+    public List<Image> findImageBySearchQuery(String search) {
+        String sql = """
+        SELECT id, user_id, storage_key, content_type, file_size, created_at, tags
+        FROM images
+        WHERE tags::text ILIKE ?
+        ORDER BY created_at DESC
+        LIMIT 50
+        """;
+
+        String pattern = "%" + search + "%";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Image image = new Image();
+            image.setId(UUID.fromString(rs.getString("id")));
+            image.setUserId(UUID.fromString(rs.getString("user_id")));
+            image.setStorageKey(rs.getString("storage_key"));
+            image.setContentType(rs.getString("content_type"));
+            image.setFileSize(rs.getLong("file_size"));
+            image.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+            image.setTags(parseTags(rs.getString("tags")));
+            return image;
+        }, pattern);
+    }
+
 }
