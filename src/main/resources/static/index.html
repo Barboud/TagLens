@@ -1,95 +1,92 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag Lens</title>
+    <title>TagLens</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
-    <div class="title">Tag<span>_</span>Lens</div>
+<header>
 
-    <!-- Loading state -->
-    <div id="loadingView" class="panel center-text">
-        <div class="panel-label">Checking session…</div>
+    <div class="logo">
+        📷 TagLens
     </div>
 
-    <!-- Logged OUT view -->
-    <div id="guestView" class="hidden">
-        <h1>Tag Lens Panel</h1>
+    <nav>
 
-        <div class="status">
-            <div class="dot" id="statusDot"></div>
-            <div class="status-text">Not logged in</div>
-        </div>
+        <button id="homeBtn">
+            Home
+        </button>
 
-        <!-- Register -->
-        <div class="panel">
-            <div class="panel-label">Register</div>
-            <label>Email</label>
-            <input type="email" id="regEmail" placeholder="user@example.com">
-            <label>Password</label>
-            <input type="password" id="regPassword" placeholder="••••••••">
-            <button class="btn-secondary" style="width:100%" onclick="register()">Create account</button>
-        </div>
+        <button id="myImagesBtn">
+            My Images
+        </button>
 
-        <!-- Login -->
-        <div class="panel">
-            <div class="panel-label">Login</div>
-            <label>Email</label>
-            <input type="email" id="loginEmail" placeholder="user@example.com">
-            <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="••••••••">
-            <button class="btn-primary" style="width:100%" onclick="login()">Log in</button>
-        </div>
-    </div>
+        <button id="loginBtn">
+            Login
+        </button>
 
-    <!-- Logged IN view -->
-    <div id="userView" class="hidden">
-        <h1>Welcome back</h1>
+        <button id="registerBtn">
+            Register
+        </button>
 
-        <div class="status">
-            <div class="dot on"></div>
-            <div class="status-text">Logged in</div>
-        </div>
+        <button id="logoutBtn">
+            Logout
+        </button>
 
-        <div class="panel">
-            <div class="panel-label">Your account</div>
-            <div class="field">
-                <span class="field-label">Email</span>
-                <span class="field-value" id="userEmail">—</span>
-            </div>
-            <div class="field">
-                <span class="field-label">User ID</span>
-                <span class="field-value mono-small" id="userId">—</span>
-            </div>
-            <div class="field">
-                <span class="field-label">Member since</span>
-                <span class="field-value" id="userCreatedAt">—</span>
-            </div>
-        </div>
+    </nav>
 
-        <button class="btn-danger" onclick="logout()">Log out</button>
+</header>
 
-        <!-- Upload -->
-        <div class="panel">
-            <div class="panel-label">Upload image</div>
-            <input type="file" id="imageFile" accept="image/*">
-            <button class="btn-primary" style="width:100%" onclick="uploadImage()">Upload</button>
-            <div id="uploadPreview"></div>
-        </div>
-    </div>
 
-    <!-- Log -->
-    <div class="log">
-        <div class="log-label">Log</div>
-        <div id="logBody"></div>
-    </div>
-</div>
+<section class="hero">
 
-<script src="script.js"></script>
+    <h1>AI Image Hosting</h1>
+
+    <p>
+        Upload images. Let AI describe them. Search anything.
+    </p>
+
+</section>
+
+
+<section class="search">
+
+    <input
+            id="searchInput"
+            placeholder="Search by tags..."
+    >
+
+    <button id="searchBtn">
+        Search
+    </button>
+
+</section>
+
+
+<section class="upload">
+
+    <input
+            type="file"
+            id="imageInput"
+            accept="image/*"
+    >
+
+    <button id="uploadBtn">
+        Upload
+    </button>
+
+</section>
+
+
+<section id="gallery" class="gallery">
+
+</section>
+
+<script src="app.js"></script>
 
 </body>
 </html>

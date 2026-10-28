@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/*.html", "/*.css", "/*.js").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/images").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()           // everything else: must be logged in
                 )
                 .addFilterBefore(sessionAuthFilter, UsernamePasswordAuthenticationFilter.class);
