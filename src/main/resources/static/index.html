@@ -3,90 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TagLens</title>
-
+    <title>TagLens — AI image hosting</title>
+    <meta name="description" content="Upload images. AI tags every one. Search by what's inside.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%237c5cff'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
+<header class="topbar">
+    <a class="brand" href="#explore" aria-label="TagLens home">
+        <span class="brand-mark"></span>
+        <span>TagLens</span>
+    </a>
 
-    <div class="logo">
-        📷 TagLens
-    </div>
-
-    <nav>
-
-        <button id="homeBtn">
-            Home
-        </button>
-
-        <button id="myImagesBtn">
-            My Images
-        </button>
-
-        <button id="loginBtn">
-            Login
-        </button>
-
-        <button id="registerBtn">
-            Register
-        </button>
-
-        <button id="logoutBtn">
-            Logout
-        </button>
-
+    <nav class="tabs" aria-label="Main">
+        <button class="tab active" data-view="explore">Explore</button>
+        <button class="tab" data-view="library" data-auth="true">My Library</button>
     </nav>
 
+    <div class="topbar-actions">
+        <button id="themeBtn" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <div id="guestActions">
+            <button class="btn ghost" id="loginBtn">Log in</button>
+            <button class="btn primary" id="registerBtn">Sign up</button>
+        </div>
+        <div id="userActions" hidden>
+            <span class="user-chip" id="userChip"></span>
+            <button class="btn ghost" id="logoutBtn">Log out</button>
+        </div>
+    </div>
 </header>
 
+<main>
+    <!-- ============ EXPLORE ============ -->
+    <section id="view-explore" class="view">
+        <div class="hero">
+            <span class="ai-badge"><i class="spark"></i> Tagged by Gemini AI</span>
+            <h1>Every image, <em>understood.</em></h1>
+            <p>Upload a picture and AI names the objects, the mood and the colours inside it. Then search by what you remember — not by file name.</p>
 
-<section class="hero">
+            <form id="searchForm" class="searchbar" role="search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input id="searchInput" type="search" placeholder="Try “dog”, “sunset”, “blue”…" autocomplete="off">
+                <button class="btn primary" type="submit">Search</button>
+            </form>
 
-    <h1>AI Image Hosting</h1>
+            <div id="trending" class="trending" hidden>
+                <span class="label">Popular AI tags</span>
+                <div id="trendingChips" class="chips"></div>
+            </div>
+        </div>
 
-    <p>
-        Upload images. Let AI describe them. Search anything.
-    </p>
+        <div class="section-head">
+            <h2 id="exploreTitle">Latest uploads</h2>
+            <button id="clearSearch" class="btn ghost small" hidden>✕ Clear search</button>
+        </div>
+        <div id="exploreGrid" class="grid"></div>
+    </section>
 
-</section>
+    <!-- ============ LIBRARY ============ -->
+    <section id="view-library" class="view" hidden>
+        <div class="section-head">
+            <h2>My Library</h2>
+            <div id="stats" class="stats"></div>
+        </div>
 
+        <label id="dropzone" class="dropzone" tabindex="0">
+            <input id="fileInput" type="file" accept="image/*" hidden>
+            <div class="dz-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+            </div>
+            <div>
+                <strong id="dzTitle">Drop an image or click to upload</strong>
+                <p id="dzHint">JPG, PNG, WebP · up to 10 MB · AI tags appear in seconds</p>
+            </div>
+        </label>
 
-<section class="search">
+        <div id="libraryGrid" class="grid"></div>
+    </section>
+</main>
 
-    <input
-            id="searchInput"
-            placeholder="Search by tags..."
-    >
+<!-- ============ DETAIL MODAL ============ -->
+<dialog id="detail" class="modal wide">
+    <button class="close" data-close aria-label="Close">✕</button>
+    <div class="detail-layout">
+        <div id="detailMedia" class="detail-media"></div>
+        <div class="detail-side">
+            <span class="ai-badge"><i class="spark"></i> AI analysis</span>
+            <div id="detailTags"></div>
+            <dl id="detailMeta" class="meta"></dl>
+            <div id="detailActions" class="detail-actions"></div>
+        </div>
+    </div>
+</dialog>
 
-    <button id="searchBtn">
-        Search
-    </button>
+<!-- ============ AUTH MODAL ============ -->
+<dialog id="authModal" class="modal">
+    <button class="close" data-close aria-label="Close">✕</button>
+    <div class="seg" role="tablist">
+        <button class="seg-btn active" data-mode="login" role="tab">Log in</button>
+        <button class="seg-btn" data-mode="register" role="tab">Sign up</button>
+    </div>
+    <form id="authForm" novalidate>
+        <h3 id="authTitle">Welcome back</h3>
+        <label class="field">Email
+            <input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+        </label>
+        <label class="field">Password
+            <input id="authPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters">
+        </label>
+        <p id="authError" class="form-error" role="alert" hidden></p>
+        <button id="authSubmit" class="btn primary block" type="submit">Log in</button>
+    </form>
+</dialog>
 
-</section>
-
-
-<section class="upload">
-
-    <input
-            type="file"
-            id="imageInput"
-            accept="image/*"
-    >
-
-    <button id="uploadBtn">
-        Upload
-    </button>
-
-</section>
-
-
-<section id="gallery" class="gallery">
-
-</section>
+<div id="toasts" class="toasts" aria-live="polite"></div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
